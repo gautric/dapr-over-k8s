@@ -1,0 +1,128 @@
+---
+- hosts: localhost
+  vars:
+     helm_chart_url: 
+      - { name: "dapr", url: "https://dapr.github.io/helm-charts/" }
+      - { name: "redis", url: "https://charts.bitnami.com/bitnami" }
+     dapr_version: 1.8.3
+     dapr_namespace: dapr-system
+
+  tasks:
+
+    - name: "Add all Helm Chart Repo "
+      kubernetes.core.helm_repository:
+        name: "{{ item.name }}"  
+        repo_url: "{{ item.url }}"  
+      with_items: "{{ helm_chart_url }}"
+
+    - name: "Create {{ dapr_namespace }} namespace"
+      kubernetes.core.k8s:
+        name: "{{ dapr_namespace }}"
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: Install DAPR Chart
+      kubernetes.core.helm:
+        name: dapr
+        namespace: "{{ dapr_namespace }}"
+        chart_ref: dapr/dapr
+        chart_version: "{{ dapr_version }}"
+        update_repo_cache: true
+        values:
+          dapr_placement:
+            logLevel: DEBUG
+            cluster:
+              forceInMemoryLog: true
+            cluster.forceInMemoryLog: true
+            runAsNonRoot: true
+          dapr_sidecar_injector:
+            logLevel: DEBUG
+          dapr_sentry:
+            runAsNonRoot: true
+            logLevel: DEBUG
+
+    - name: "Route for DAPR dashboard"
+      kubernetes.core.k8s:
+        name: dapr-dashboard
+        api_version: v1
+        kind: Route
+        state: present
+        namespace: "{{ dapr_namespace }}"
+        definition:
+          apiVersion: route.openshift.io/v1
+          metadata:
+            annotations:
+              openshift.io/host.generated: 'true'
+          spec:
+            to:
+              kind: Service
+              name: dapr-dashboard
+              weight: 100
+            port:
+              targetPort: 8080
+            wildcardPolicy: None
+
+    - name: "Gather information about DAPR {{ dapr_namespace }}"
+      kubernetes.core.helm_info:
+        name: dapr
+        release_namespace: "{{ dapr_namespace }}"
+
+    - name: "Get a list of all pods from {{ dapr_namespace }}"
+      kubernetes.core.k8s_info:
+        kind: Pod
+        label_selectors:
+          - app.kubernetes.io/name = dapr
+          - app.kubernetes.io/part-of = dapr
+      register: dapr_pod_list
+
+    - debug: msg="Check {{ dapr_pod_list }} List"
+      when: dapr_pod_list is defined
+
+    - name: Example using fail and when together
+      ansible.builtin.fail:
+        msg: "{{dapr_pod_list | length}} > 0"
+      when: (dapr_pod_list|length) == 0      
+
+    - name: Install Redis Helm Chart
+      kubernetes.core.helm:
+        name: redis 
+        namespace: "{{ dapr_namespace }}"
+        chart_ref: bitnami/redis
+        update_repo_cache: true
+        values:
+          master:
+            podSecurityContext:
+              enabled: false
+            containerSecurityContext:
+              enabled: false
+          replica:
+            podSecurityContext:
+              enabled: false
+            containerSecurityContext:
+              enabled: false
+
+    - name: Apply Redis DAPR integration
+      kubernetes.core.k8s:
+        state: present
+        namespace: "{{ dapr_namespace }}"
+        src: quickstarts/tutorials/hello-kubernetes/deploy/redis.yaml
+
+    - name: Pause for 30' seconds
+      ansible.builtin.pause:
+        seconds: 30
+
+    - name: Deploy Node.js app with the Dapr sidecar
+      kubernetes.core.k8s:
+        state: present
+        namespace: "{{ dapr_namespace }}"
+        src: quickstarts/tutorials/hello-kubernetes/deploy/node.yaml
+
+    - name: Deploy Python app with the Dapr sidecar
+      kubernetes.core.k8s:
+        state: present
+        namespace: "{{ dapr_namespace }}"
+        src: quickstarts/tutorials/hello-kubernetes/deploy/python.yaml        
+
+
+ 

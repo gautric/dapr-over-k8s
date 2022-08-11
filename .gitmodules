@@ -1,0 +1,4 @@
+[submodule "quickstarts"]
+	path = quickstarts
+	url = git@github.com:dapr/quickstarts.git
+	branch = release-1.8
