@@ -20,7 +20,7 @@ Dapr brings lot a cool stuff like :
 * Secrets
 ** Keep sensitive information into secret mechanism
 * Configuration
-** Manage properties/values/parameters
+** Manage properties/values/parameters for client applications
 
 ### API
 
