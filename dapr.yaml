@@ -77,12 +77,7 @@
       register: dapr_pod_list
 
     - debug: msg="Check {{ dapr_pod_list }} List"
-      when: dapr_pod_list is defined
-
-    - name: Example using fail and when together
-      ansible.builtin.fail:
-        msg: "{{dapr_pod_list | length}} > 0"
-      when: (dapr_pod_list|length) == 0      
+      when: dapr_pod_list is defined    
 
     - name: Install Redis Helm Chart
       kubernetes.core.helm:
@@ -123,6 +118,3 @@
         state: present
         namespace: "{{ dapr_namespace }}"
         src: quickstarts/tutorials/hello-kubernetes/deploy/python.yaml        
-
-
- 
