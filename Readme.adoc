@@ -2,7 +2,6 @@
 
 This project explains how to install DAPR over K8S with Ansible and Helm Chart solutions.
 
-
 ## DAPR Overview
 
 Dapr is an amazing middleware framework. This framework helps developper to build and use resilient and secured microservices mainly over a Kubernetes infrastructurefootnote:[a local installation is possible : https://docs.dapr.io/operations/hosting/self-hosted/]. Dapr for **D**istributed **Ap**plication **R**untime provide several piece for developers, integrators and operators who want run theirs application on a Kubernetes cluster. 
@@ -38,11 +37,10 @@ Because Dapr abstracts all backend with an API, Dapr provides two kinds of API.
 Helm system is the package manager for all software or solution running over Kubernetes. Helm provides the same user experience as _yum_, _apt_ but focus on Kubernetes technologies.
 As Kubernetes, Helm is YAML first. Developer can create some powerful template for his application or solution. When Operator needs to install the solution, Helm merge the Helm package with some specifics values (Env values, k8s cluster values, package values, Business values). 
 
-
 ## Ansible
 
-Ansible is a automation tool world wide used. This tool can IT Ops to automate all technical configuration and deployement over any infrastructures : OnPremise, Cloud, Hybrid Cloud, Edge etc....
-By using playbook, a YAML file including all commands designer by Ansible, Ops users can control, deploy, check lots of devices/services/vm/cloud infrastructure. Ansible separates execution and configuration, it meeans that you can reuse any playbook with another environment configuration smoothly. 
+Ansible is a automation tool world wide used. This tool helps IT Ops to automate all technical configuration and deployment over any infrastructures : OnPremise, Cloud, Hybrid Cloud, Edge etc....
+By using playbook, a YAML file including all commands designer by Ansible, Ops users can control, deploy, check lots of devices/services/vm/cloud infrastructure. Ansible separates execution and configuration, it means that you can reuse any playbook with another environment configuration smoothly. 
 
 ## Let's run
 
@@ -81,3 +79,16 @@ and
 
   kubectl --namespace dapr-system  logs `kubectl --namespace dapr-system get pods -l app=python --no-headers -o custom-columns=":metadata.name"` python 
 
+* Check DAPR Dashboard
+
+  open -a Firefox   http://`kubectl --namespace dapr-system get Route -l app=dapr-dashboard --no-headers -o custom-columns=":spec.host" `
+
+You should get this kind of output into your browser
+
+image::img/dapr-dashboard.png[]  
+
+### TODO
+
+* Create Role
+* Add new Application
+* Add new Building blocks
