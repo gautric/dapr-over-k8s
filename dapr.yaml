@@ -54,6 +54,8 @@
           metadata:
             annotations:
               openshift.io/host.generated: 'true'
+            labels:
+              name: dapr-dashboard
           spec:
             to:
               kind: Service
