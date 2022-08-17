@@ -9,6 +9,15 @@
 
   tasks:
 
+    - name: Check if K8S is an Openshift instance
+      kubernetes.core.k8s_info:
+        api_version: config.openshift.io/v1
+        kind: ClusterVersion
+      register: is_ocp_k8s
+
+    - debug: msg="Openshift {{ is_ocp_k8s.resources[0].spec.channel }} / {{ is_ocp_k8s.resources[0].status.desired.version }}"
+      when: is_ocp_k8s.api_found
+
     - name: "Add all Helm Chart Repo "
       kubernetes.core.helm_repository:
         name: "{{ item.name }}"  
@@ -64,6 +73,7 @@
             port:
               targetPort: 8080
             wildcardPolicy: None
+      when: is_ocp_k8s.api_found
 
     - name: "Gather information about DAPR {{ dapr_namespace }}"
       kubernetes.core.helm_info:
