@@ -1,0 +1,7 @@
+global:
+  container:
+    registry: image-registry.openshift-image-registry.svc:5000
+
+  build:
+    s2i: nodejs:16-ubi8
+    contextDir: service_invocation/javascript/http
