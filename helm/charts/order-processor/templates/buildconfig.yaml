@@ -1,0 +1,44 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: order-processor
+    app.kubernetes.io/component: order-processor
+    app.kubernetes.io/instance: order-processor
+    app.kubernetes.io/name: order-processor
+    app.kubernetes.io/part-of: service-invocation
+    app.openshift.io/runtime: nodejs
+    app.openshift.io/runtime-version: 16-ubi8
+  name: order-processor
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: order-processor:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    contextDir: {{ .Values.global.build.contextDir }}/order-processor
+    git:
+      uri: https://github.com/dapr/quickstarts.git
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: {{ .Values.global.build.s2i }}
+        namespace: openshift
+    type: Source
+  triggers:
+  - generic:
+      secretReference:
+        name: order-processor-generic-webhook-secret
+    type: Generic
+  - github:
+      secretReference:
+        name: order-processor-github-webhook-secret
+    type: GitHub
+  - imageChange: {}
+    type: ImageChange
+  - type: ConfigChange
