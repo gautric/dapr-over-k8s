@@ -71,7 +71,7 @@ To run this playbook you need :
 
   ansible-playbook dapr-system.yaml
 
-#### Check DAPR Dashboard
+#### Check DAPR Dashboard deployment
 
   open -a Firefox   http://`kubectl --namespace dapr-system get Route -l app=dapr-dashboard --no-headers -o custom-columns=":spec.host" `
 
@@ -92,7 +92,7 @@ What's the playbook does :
 
   ansible-playbook dapr-sample.yaml
 
-#### Check the final installation from 
+#### Check client / server application with log
 
   kubectl --namespace dapr-sample  logs `kubectl --namespace dapr-sample get pods -l app=node --no-headers -o custom-columns=":metadata.name"` node 
 
@@ -111,7 +111,7 @@ What's the playbook does :
 
   ansible-playbook dapr-service-invocation.yaml
 
-#### Check the final installation from 
+#### Check client / server application with log
 
   kubectl --namespace dapr-service-invocation  logs `kubectl --namespace dapr-service-invocation get pods -l app=checkout --no-headers -o custom-columns=":metadata.name"` checkout -f
 
