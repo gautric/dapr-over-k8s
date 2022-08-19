@@ -4,7 +4,7 @@ This project explains how to install DAPR over K8S with Ansible and Helm Chart s
 
 ## DAPR Overview
 
-Dapr is an amazing middleware framework. This framework helps developper to build and use resilient and secured microservices mainly over a Kubernetes infrastructurefootnote:[a local installation is possible : https://docs.dapr.io/operations/hosting/self-hosted/]. Dapr for **D**istributed **Ap**plication **R**untime provide several piece for developers, integrators and operators who want run theirs application on a Kubernetes cluster. 
+Dapr is an amazing middleware framework for cloud stack. This framework helps developper to create, use resilient and secured microservices mainly over a Kubernetes infrastructurefootnote:[a local installation is possible : https://docs.dapr.io/operations/hosting/self-hosted/]. Dapr for **D**istributed **Ap**plication **R**untime provide several piece for developers, integrators and operators who want run theirs application on a Kubernetes cluster. 
 The main idea of Dapr is to wrap / abstract all tiers components whitin an standardized API.
 
 ### Building blocks
@@ -55,7 +55,7 @@ To use this project you need at least :
 
 What's the playbook does :
 
-. Create dapr-system NS
+. Create `dapr-system` NS
 . Install Helm Chart Repo (DAPR and REDIS)
 . Install DAPR Helm 
 . Create a route to Dapr Dashboard
@@ -83,7 +83,7 @@ image::img/dapr-dashboard.png[]
 
 What's the playbook does :
 
-. Create dapr-sample NS
+. Create `dapr-sample` NS
 . Copy/Paste redis password for Dapr Componentfootnote:[to check]
 . Deploy Node App
 . Deploy Python App
@@ -104,7 +104,7 @@ and
 
 What's the playbook does :
 
-. Create dapr-sample NS
+. Create `dapr-service-invocation` NS
 . Deploy Node App with Helm chart
 
 #### Execute the playbook
