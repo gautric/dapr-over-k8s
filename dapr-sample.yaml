@@ -66,16 +66,4 @@
       kubernetes.core.k8s:
         state: present
         namespace: "{{ app_namespace }}"
-        src: quickstarts/tutorials/hello-kubernetes/deploy/python.yaml        
-
-    - name: Deploy OrderProcessor app with the Dapr sidecar
-      kubernetes.core.k8s:
-        state: present
-        namespace: "{{ app_namespace }}"
-        src: service_invocation/javascript/http/k8s/order-processor.yaml
-
-    - name: Deploy Checkout app with the Dapr sidecar
-      kubernetes.core.k8s:
-        state: present
-        namespace: "{{ app_namespace }}"
-        src: service_invocation/javascript/http/k8s/checkout.yaml
+        src: quickstarts/tutorials/hello-kubernetes/deploy/python.yaml
