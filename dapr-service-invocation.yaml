@@ -5,7 +5,7 @@
      namespace: dapr-service-invocation
   tasks:
 
-    - name: "Create {{ dapr_namespace }} namespace"
+    - name: "Create {{ namespace }} namespace"
       kubernetes.core.k8s:
         name: "{{ namespace }}"
         api_version: v1
