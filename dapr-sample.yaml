@@ -44,6 +44,7 @@
         state: patched
         kind: Component
         name: statestore
+        namespace: "{{ app_namespace }}"
         api_version: dapr.io/v1alpha1
         definition:
           spec:
