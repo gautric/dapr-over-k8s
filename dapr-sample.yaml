@@ -1,0 +1,81 @@
+---
+- name: Dapr Sample Installation
+  hosts: localhost
+  vars:
+     app_namespace: dapr-sample
+     dapr_namespace: dapr-system
+  tasks:
+
+    - name: "Create {{ app_namespace }} namespace"
+      kubernetes.core.k8s:
+        name: "{{ app_namespace }}"
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: "Copy Secret from {{ dapr_namespace }}"
+      kubernetes.core.k8s_info:
+        kind: Secret
+        name: redis
+        namespace: "{{ dapr_namespace }}"
+      register: redis_secret
+
+    - name: "Paste Secret to {{ app_namespace }}"
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          type: Opaque
+          kind: Secret
+          apiVersion: v1
+          metadata:
+            name: redis
+            namespace: "{{ app_namespace }}"
+          data:
+            "{{ redis_secret.resources[0].data }}"
+
+    - name: Apply Redis DAPR integration
+      kubernetes.core.k8s:
+        state: present
+        namespace: "{{ app_namespace }}"
+        src: quickstarts/tutorials/hello-kubernetes/deploy/redis.yaml
+
+    - name: Patch Statestore Component
+      kubernetes.core.k8s:
+        state: patched
+        kind: Component
+        name: statestore
+        api_version: dapr.io/v1alpha1
+        definition:
+          spec:
+            metadata:
+              - name: redisHost
+                value: redis-master.dapr-system.svc.cluster.local:6379
+              - name: redisPassword
+                secretKeyRef:
+                  name: redis
+                  key: redis-password
+
+
+    - name: Deploy Node.js app with the Dapr sidecar
+      kubernetes.core.k8s:
+        state: present
+        namespace: "{{ app_namespace }}"
+        src: quickstarts/tutorials/hello-kubernetes/deploy/node.yaml
+
+    - name: Deploy Python app with the Dapr sidecar
+      kubernetes.core.k8s:
+        state: present
+        namespace: "{{ app_namespace }}"
+        src: quickstarts/tutorials/hello-kubernetes/deploy/python.yaml        
+
+    - name: Deploy OrderProcessor app with the Dapr sidecar
+      kubernetes.core.k8s:
+        state: present
+        namespace: "{{ app_namespace }}"
+        src: service_invocation/javascript/http/k8s/order-processor.yaml
+
+    - name: Deploy Checkout app with the Dapr sidecar
+      kubernetes.core.k8s:
+        state: present
+        namespace: "{{ app_namespace }}"
+        src: service_invocation/javascript/http/k8s/checkout.yaml
