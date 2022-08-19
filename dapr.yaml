@@ -150,11 +150,12 @@
         namespace: "{{ app_namespace }}"
         src: quickstarts/tutorials/hello-kubernetes/deploy/redis.yaml
 
-    - name: add label to existing namespace
+    - name: Patch Statestore Component
       kubernetes.core.k8s:
         state: patched
         kind: Component
         name: statestore
+        api_version: dapr.io/v1alpha1
         definition:
           spec:
             metadata:
