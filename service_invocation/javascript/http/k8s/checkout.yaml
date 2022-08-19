@@ -35,7 +35,7 @@ items:
           deploymentconfig: checkout
       spec:
         containers:
-        - image: image-registry.openshift-image-registry.svc:5000/dapr-system/checkout
+        - image: image-registry.openshift-image-registry.svc:5000/dapr-application/checkout
           imagePullPolicy: Always
           name: checkout
           ports:
