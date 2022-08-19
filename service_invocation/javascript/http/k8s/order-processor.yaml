@@ -36,7 +36,7 @@ items:
           deploymentconfig: order-processor
       spec:
         containers:
-        - image: image-registry.openshift-image-registry.svc:5000/dapr-application/order-processor
+        - image: image-registry.openshift-image-registry.svc:5000/dapr-sample/order-processor
           imagePullPolicy: Always
           name: order-processor
           ports:
