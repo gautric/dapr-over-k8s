@@ -139,7 +139,7 @@
           kind: Secret
           apiVersion: v1
           metadata:
-            name: rediscopy
+            name: redis
             namespace: "{{ app_namespace }}"
           data:
             "{{ redis_secret.resources[0].data }}"
