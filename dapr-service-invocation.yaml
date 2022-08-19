@@ -1,0 +1,20 @@
+---
+- name: Dapr ServiceInvocation Installation
+  hosts: localhost
+  vars:
+     namespace: dapr-service-invocation
+  tasks:
+
+    - name: "Create {{ dapr_namespace }} namespace"
+      kubernetes.core.k8s:
+        name: "{{ namespace }}"
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: Install service-invocation Sample Chart
+      kubernetes.core.helm:
+        name: service-invocation
+        namespace: "{{ namespace }}"
+        chart_ref: ./helm/charts/service-invocation
+        release_state: present
