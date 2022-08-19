@@ -1,0 +1,40 @@
+---
+- name: Dapr PubSub Installation
+  hosts: localhost
+  vars:
+     namespace: dapr-pub-sub
+  tasks:
+
+    - name: "Create {{ namespace }} namespace"
+      kubernetes.core.k8s:
+        name: "{{ namespace }}"
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: "Copy Secret from dapr-system"
+      kubernetes.core.k8s_info:
+        kind: Secret
+        name: redis
+        namespace: "dapr-system"
+      register: redis_secret
+
+    - name: "Paste Secret to {{ namespace }}"
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          type: Opaque
+          kind: Secret
+          apiVersion: v1
+          metadata:
+            name: redis
+            namespace: "{{ namespace }}"
+          data:
+            "{{ redis_secret.resources[0].data }}"
+
+    - name: Install pub-sub Sample Chart
+      kubernetes.core.helm:
+        name: pub-sub
+        namespace: "{{ namespace }}"
+        chart_ref: ./helm/charts/pub-sub
+        release_state: present
