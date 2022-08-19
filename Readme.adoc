@@ -51,44 +51,78 @@ To use this project you need at least :
 * Ansible 2.13+
 * Helm 3.9+
 
+### Install Dapr System with Helm
+
 What's the playbook does :
 
+. Create dapr-system NS
 . Install Helm Chart Repo (DAPR and REDIS)
 . Install DAPR Helm 
 . Create a route to Dapr Dashboard
 . Install Redis Helm 
-. Apply Redis integration to DAPR
-. Deploy NodeJS sample 
-. Deploy Python sample
 
 To run this playbook you need :
 
-* Clone this repository 
+#### Clone this repository 
 
   git clone --recurse-submodules git@github.com:gautric/dapr-over-k8s.git
 
-* Execute the playbook
+#### Execute the playbook
 
-  ansible-playbook dapr.yaml
+  ansible-playbook dapr-system.yaml
 
-* Check the final installation from 
-
-  kubectl --namespace dapr-system  logs `kubectl --namespace dapr-system get pods -l app=node --no-headers -o custom-columns=":metadata.name"` node 
-
-and 
-
-  kubectl --namespace dapr-system  logs `kubectl --namespace dapr-system get pods -l app=python --no-headers -o custom-columns=":metadata.name"` python 
-
-* Check DAPR Dashboard
+#### Check DAPR Dashboard
 
   open -a Firefox   http://`kubectl --namespace dapr-system get Route -l app=dapr-dashboard --no-headers -o custom-columns=":spec.host" `
 
 You should get this kind of output into your browser
 
-image::img/dapr-dashboard.png[]  
+image::img/dapr-dashboard.png[]   
+
+### Install Dapr Sample with Helm
+
+What's the playbook does :
+
+. Create dapr-sample NS
+. Copy/Paste redis password for Dapr Componentfootnote:[to check]
+. Deploy Node App
+. Deploy Python App
+
+#### Execute the playbook
+
+  ansible-playbook dapr-sample.yaml
+
+#### Check the final installation from 
+
+  kubectl --namespace dapr-sample  logs `kubectl --namespace dapr-sample get pods -l app=node --no-headers -o custom-columns=":metadata.name"` node 
+
+and 
+
+  kubectl --namespace dapr-sample  logs `kubectl --namespace dapr-sample get pods -l app=python --no-headers -o custom-columns=":metadata.name"` python 
+
+### Install Dapr Service Invocation with Helm
+
+What's the playbook does :
+
+. Create dapr-sample NS
+. Deploy Node App with Helm chart
+
+#### Execute the playbook
+
+  ansible-playbook dapr-service-invocation.yaml
+
+#### Check the final installation from 
+
+  kubectl --namespace dapr-service-invocation  logs `kubectl --namespace dapr-service-invocation get pods -l app=checkout --no-headers -o custom-columns=":metadata.name"` checkout -f
+
+and 
+
+  kubectl --namespace dapr-service-invocation  logs `kubectl --namespace dapr-service-invocation get pods -l app=order-processor --no-headers -o custom-columns=":metadata.name"` order-processor -f 
+
 
 ### TODO
 
 * Create Role
 * Add new Application
 * Add new Building blocks
+
