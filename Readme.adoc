@@ -5,7 +5,9 @@ This project explains how to install DAPR over K8S with Ansible and Helm solutio
 ## DAPR Overview
 
 Dapr is an amazing middleware framework for cloud stack. This framework helps developper to create, use resilient and secured microservices mainly over a Kubernetes infrastructurefootnote:[a local installation is possible : https://docs.dapr.io/operations/hosting/self-hosted/]. Dapr for **D**istributed **Ap**plication **R**untime provide several piece for developers, integrators and operators who want run theirs application on a Kubernetes cluster. 
-The main idea of Dapr is to wrap / abstract all tiers components whitin an standardized API.
+The main idea of Dapr is to wrap / abstract all tiers components within an _standardized_ API. Tier providers can easely integrate theirs components inside Dapr stack without any business app code modification.
+
+Currently the stable version version of http://dapr.io[Dapr.io] is `1.8.4` (2022-08-22).
 
 ### Building blocks
 
