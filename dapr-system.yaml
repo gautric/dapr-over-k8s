@@ -4,7 +4,7 @@
   vars:
      helm_chart_url: 
       - { name: "dapr", url: "https://dapr.github.io/helm-charts/" }
-      - { name: "redis", url: "https://charts.bitnami.com/bitnami" }
+      - { name: "bitnami", url: "https://charts.bitnami.com/bitnami" }
      dapr_version: 1.8.4
      dapr_namespace: dapr-system
 
@@ -110,3 +110,76 @@
             containerSecurityContext:
               enabled: false
 
+    - name: "Deploy Zipkin"
+      kubernetes.core.k8s:
+        name: zipkin
+        api_version: apps/v1
+        kind: Deployment
+        state: present
+        namespace: "{{ dapr_namespace }}"
+        definition:
+          metadata:
+            labels:
+              app: zipkin
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: zipkin
+            template:
+              metadata:
+                labels:
+                  app: zipkin
+              spec:
+                containers:
+                  - name: zipkin
+                    image: openzipkin/zipkin
+
+    - name: "Expose Zipkin"
+      kubernetes.core.k8s:
+        name: zipkin
+        api_version: v1
+        kind: Service
+        state: present
+        namespace: "{{ dapr_namespace }}"
+        definition:
+          metadata:
+            name: zipkin
+            labels:
+              app: zipkin            
+          spec:
+            ipFamilies:
+              - IPv4
+            ports:
+              - protocol: TCP
+                port: 9411
+                targetPort: 9411
+            internalTrafficPolicy: Cluster
+            type: ClusterIP
+            ipFamilyPolicy: SingleStack
+            selector:
+              app: zipkin
+
+    - name: "Route for Zipkin dashboard"
+      kubernetes.core.k8s:
+        name: dapr-zipkin
+        api_version: v1
+        kind: Route
+        state: present
+        namespace: "{{ dapr_namespace }}"
+        definition:
+          apiVersion: route.openshift.io/v1
+          metadata:
+            annotations:
+              openshift.io/host.generated: 'true'
+            labels:
+              name: dapr-zipkin
+          spec:
+            to:
+              kind: Service
+              name: zipkin
+              weight: 100
+            port:
+              targetPort: 9411
+            wildcardPolicy: None
+      when: is_ocp_k8s.api_found

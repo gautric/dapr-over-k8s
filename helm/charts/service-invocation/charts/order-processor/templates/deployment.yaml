@@ -29,12 +29,14 @@ spec:
         dapr.io/app-port: "5001"
         dapr.io/enable-api-logging: "true"
         dapr.io/enabled: "true"
+        {{- if .Values.global.dapr.config }} 
+        dapr.io/config: {{ .Values.global.dapr.config }} 
+        {{- end }}
       labels:
         app: order-processor
         deploymentconfig: order-processor
     spec:
       containers:
-#      - image: {{ .Release.Namespace }}/order-processor
       - image: {{ .Values.global.container.registry }}/{{ .Release.Namespace }}/order-processor
         imagePullPolicy: Always
         name: order-processor

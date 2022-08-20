@@ -1,0 +1,19 @@
+{{- if .Values.global.dapr.config }}
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: {{ .Values.global.dapr.config }}
+  labels:
+    app.kubernetes.io/part-of: service-invocation
+spec:
+  metric:
+    enabled: true
+  mtls:
+    allowedClockSkew: 15m
+    enabled: true
+    workloadCertTTL: 24h
+  tracing:
+    samplingRate: "{{ .Values.tracing.samplingRate }}"
+    zipkin:
+      endpointAddress: "http://zipkin.{{ .Values.tracing.zipkin.namespace }}.svc.cluster.local:9411/api/v2/spans"
+{{- end }}

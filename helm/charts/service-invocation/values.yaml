@@ -1,4 +1,13 @@
+
+tracing:
+  samplingRate: "1"
+  zipkin:
+    namespace: dapr-system
+
 global:
+  dapr:
+    config: service-invocation
+
   container:
     registry: image-registry.openshift-image-registry.svc:5000
 

@@ -28,12 +28,14 @@ spec:
         dapr.io/app-id: checkout
         dapr.io/enable-api-logging: "true"
         dapr.io/enabled: "true"
+        {{- if .Values.global.dapr.config }} 
+        dapr.io/config: {{ .Values.global.dapr.config }} 
+        {{- end }}
       labels:
         app: checkout
         deploymentconfig: checkout
     spec:
       containers:
-#      - image: {{ .Release.Namespace }}/checkout
       - image: {{ .Values.global.container.registry }}/{{ .Release.Namespace }}/checkout
         imagePullPolicy: Always
         name: checkout
