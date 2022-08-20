@@ -1,6 +1,6 @@
 # DAPR over K8S
 
-This project explains how to install DAPR over K8S with Ansible and Helm Chart solutions.
+This project explains how to install DAPR over K8S with Ansible and Helm solutions.
 
 ## DAPR Overview
 
@@ -40,7 +40,7 @@ As Kubernetes, Helm is YAML first. Developer can create some powerful template f
 ## Ansible
 
 Ansible is a automation tool world wide used. This tool helps IT Ops to automate all technical configuration and deployment over any infrastructures : OnPremise, Cloud, Hybrid Cloud, Edge etc....
-By using playbook, a YAML file including all commands designer by Ansible, Ops users can control, deploy, check lots of devices/services/vm/cloud infrastructure. Ansible separates execution and configuration, it means that you can reuse any playbook with another environment configuration smoothly. 
+By using playbook, a YAML file including all commands designer by Ansible, Ops users can control, deploy, check lots of devices/services/vm/cloud infrastructure. Ansible separates execution and configuration, it means that you can reuse any playbook with another environment configuration smoothly.
 
 ## Let's run
 
@@ -60,6 +60,7 @@ What's the playbook does :
 . Install DAPR Helm 
 . Create a route to Dapr Dashboard
 . Install Redis Helm 
+. Install Zipkin Configuration
 
 To run this playbook you need :
 
@@ -71,13 +72,23 @@ To run this playbook you need :
 
   ansible-playbook dapr-system.yaml
 
-#### Check DAPR Dashboard deployment
+#### Check Dapr & Zipkin Dashboard deployment
 
+* For Dapr Dashboard (Mac users)
+ 
   open -a Firefox   http://`kubectl --namespace dapr-system get Route -l app=dapr-dashboard --no-headers -o custom-columns=":spec.host" `
 
 You should get this kind of output into your browser
 
 image::img/dapr-dashboard.png[]   
+
+* For Zipkin Dashboard (Mac users)
+ 
+  open -a Firefox   http://`kubectl --namespace dapr-system get Route -l app=zipkin --no-headers -o custom-columns=":spec.host" `
+
+You should get this kind of output into your browser
+
+image::img/dapr-zipkin.png[]   
 
 ### Install Dapr Sample with Helm
 
@@ -105,7 +116,10 @@ and
 What's the playbook does :
 
 . Create `dapr-service-invocation` NS
-. Deploy Node App with Helm chart
+. Deploy Service Invocation with Helm chart
+.. Checkout App (build, deploy, imagestream)
+.. Order-Process App (build, deploy, imagestream)
+.. Dapr Configuration for ServiceInvocation
 
 #### Execute the playbook
 
@@ -119,10 +133,15 @@ and
 
   kubectl --namespace dapr-service-invocation  logs `kubectl --namespace dapr-service-invocation get pods -l app=order-processor --no-headers -o custom-columns=":metadata.name"` order-processor -f 
 
-
 ### TODO
 
 * Create Role
 * Add new Application
 * Add new Building blocks
 
+### LINKS
+
+* https://docs.dapr.io/operations/hosting/kubernetes/kubernetes-deploy/#install-with-helm-advanced
+* https://docs.dapr.io/reference/arguments-annotations-overview/
+* https://github.com/bitnami/charts/tree/master/bitnami/redis/#installing-the-chart
+* https://docs.dapr.io/operations/monitoring/tracing/setup-tracing/
