@@ -1,0 +1,2 @@
+
+Refactoring for K8S of https://github.com/dapr/samples/tree/master/pub-sub-routing[] sample
