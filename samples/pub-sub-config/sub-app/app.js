@@ -5,11 +5,7 @@
 
 const daprPort = process.env.DAPR_HTTP_PORT || "3500";
 
-// The Dapr endpoint for the state store component to store the tweets.
-const pubsubEndpoint = `http://localhost:${daprPort}/v1.0/publish/pubsub/inventory`;
-
 const express = require('express');
-const axios = require('axios');
 
 const app = express();
 // Dapr publishes messages with the application/cloudevents+json content-type

@@ -3,21 +3,21 @@
 // Licensed under the MIT License.
 // ------------------------------------------------------------
 
+const appPort = process.env.APP_PORT || "3000";
 const daprPort = process.env.DAPR_HTTP_PORT || "3500";
+const componentName = process.env.DAPR_COMPONENT_NAME || "pubsub";
+const topicName = process.env.DAPR_TOPIC_NAME || "inventory";
 
 // The Dapr endpoint for the state store component to store the tweets.
-const pubsubEndpoint = `http://localhost:${daprPort}/v1.0/publish/pubsub/inventory`;
+const pubsubEndpoint = `http://localhost:${daprPort}/v1.0/publish/${componentName}/${topicName}`;
 
 const express = require('express');
 const axios = require('axios');
 
 const app = express();
-// Dapr publishes messages with the application/cloudevents+json content-type
+
 app.use(express.json({ type: ['application/json', 'application/*+json'] }));
 
-const port = 3000;
-
-// Allow publishing freeform cloud events to the topic.
 app.post('/publish', async (req, res) => {
   console.log("publishing", req.body);
   console.log();
@@ -33,4 +33,4 @@ app.post('/publish', async (req, res) => {
     });
 });
 
-app.listen(port, () => console.log(`Node App listening on port ${port}!`));
+app.listen(appPort, () => console.log(`Node App listening on port ${appPort}!`));

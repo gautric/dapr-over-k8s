@@ -1,0 +1,14 @@
+
+pubsub:
+  dapr_config: pub-sub-config
+  topic: topic_name
+  component_name: pubsub-component
+
+redis:
+  master:
+    host: redis-master.dapr-system.svc.cluster.local:6379
+
+# global:
+#   container:
+#     registry: image-registry.openshift-image-registry.svc:5000
+
