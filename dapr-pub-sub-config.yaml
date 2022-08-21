@@ -1,0 +1,103 @@
+---
+- name: Dapr PubSub Installation
+  hosts: localhost
+  vars:
+     app_namespace: dapr-pubsub-kafka
+     apps: 
+      - sub-app
+      - pub-app
+     msg_test:
+      - gadget
+      - thingamajig
+      - widget
+  tasks:
+
+    - name: "Create {{ app_namespace }} namespace"
+      kubernetes.core.k8s:
+        name: "{{ app_namespace }}"
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: Check if K8S is an Openshift instance
+      kubernetes.core.k8s_info:
+        api_version: route.openshift.io/v1
+        kind: Route
+        namespace: openshift-image-registry
+        name: default-route
+      register: route
+
+    - debug: msg="Openshift {{ route }}"
+      when: route.api_found
+
+    - debug: msg="Openshift {{ route.resources[0].spec.host }}"
+      when: route.api_found
+
+    # - name: Build PubSub App
+    #   community.docker.docker_image:
+    #     build:
+    #       path: "./samples/pub-sub-config/{{ item }}"
+    #     name: "{{ item }}"
+    #     tag: latest
+    #     push: false
+    #     source: build
+    #   with_items: "{{ apps }}"
+
+    # - name: Push Image to OCP/K8S
+    #   community.docker.docker_image:
+    #     name: "{{ item }}"
+    #     repository: "{{ route.resources[0].spec.host }}/{{ app_namespace }}/{{ item }}"
+    #     push: yes
+    #     source: local
+    #   with_items: "{{ apps }}"
+
+    - name: "Copy Secret from dapr-system"
+      kubernetes.core.k8s_info:
+        kind: Secret
+        name: redis
+        namespace: "dapr-system"
+      register: redis_secret
+
+    - name: "Paste Secret to {{ app_namespace }}"
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          type: Opaque
+          kind: Secret
+          apiVersion: v1
+          metadata:
+            name: redis
+            namespace: "{{ app_namespace }}"
+          data:
+            "{{ redis_secret.resources[0].data }}"
+
+    - name: Install pub-sub Helm Chart
+      kubernetes.core.helm:
+        name: pub-sub
+        namespace: "{{ app_namespace }}"
+        chart_ref: ./helm/charts/pub-sub-config
+        release_state: present
+      register: helm_ret
+
+    - debug: msg="Helm {{ helm_ret.stdout }}"
+
+    - name: Retrieve Route
+      kubernetes.core.k8s_info:
+        api_version: route.openshift.io/v1
+        kind: Route
+        namespace: "{{ app_namespace }}"
+        name: pub-app
+      register: route
+
+    - name: Sleep for 10 seconds and continue with play
+      ansible.builtin.wait_for:
+        timeout: 10
+
+    - name: Test Route
+      ansible.builtin.uri:
+        url: "http://{{ route.resources[0].spec.host }}/publish"
+        method: POST
+        src: "./samples/pub-sub-config/messages/{{ item }}.json"
+        status_code: 200
+        body_format: json
+      with_items: "{{ msg_test }}"
