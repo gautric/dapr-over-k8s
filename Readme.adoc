@@ -144,7 +144,6 @@ What's the playbook does :
 . Deploy Pub Sub with Helm chart
 .. Checkout App (build, deploy, imagestream)
 .. Order-Process App (build, deploy, imagestream)
-.. Dapr Configuration for ServiceInvocation
 
 #### Execute the playbook
 
@@ -159,11 +158,54 @@ and
   kubectl --namespace dapr-pub-sub  logs `kubectl --namespace dapr-pub-sub get pods -l app=order-processor --no-headers -o custom-columns=":metadata.name"` order-processor -f 
 
 
-### TODO
+### Install Dapr Pub Sub and Redis with Helm
 
-* Create Role
-* Add new Application
-* Add new Building blocks
+What's the playbook does :
+
+. Create `dapr-pubsub-config` NS
+. Deploy Pub Sub with Helm chart
+.. Pub-App 
+.. Sub-App
+.. Kafka cluster and Topic creation
+.. Dapr Configuration for PubSub over Redis
+
+#### Execute the playbook
+
+  ansible-playbook dapr-pub-sub-config.yaml
+
+#### Check client / server application with log
+
+  kubectl --namespace dapr-pubsub-config  logs `kubectl --namespace dapr-pubsub-config get pods -l app=pub-app --no-headers -o custom-columns=":metadata.name"` pub-app -f
+
+and 
+
+  kubectl --namespace dapr-pubsub-config  logs `kubectl --namespace dapr-pubsub-config get pods -l app=sub-app --no-headers -o custom-columns=":metadata.name"` sub-app -f 
+
+### Install Dapr Pub Sub and Kafka with Helm
+
+What's the playbook does :
+
+. Create `dapr-pubsub-kafka` NS
+. Deploy Pub Sub with Helm chart
+.. Pub-App 
+.. Sub-App
+.. Kafka cluster and Topic creation
+.. Dapr Configuration for PubSub over Kafka
+++ Kafka UI
+
+#### Execute the playbook
+
+  ansible-playbook dapr-pub-sub-kafka.yaml
+
+#### Check client / server application with log
+
+  kubectl --namespace dapr-pubsub-kafka  logs `kubectl --namespace dapr-pubsub-kafka get pods -l app=pub-app --no-headers -o custom-columns=":metadata.name"` pub-app -f
+
+and 
+
+  kubectl --namespace dapr-pubsub-kafka  logs `kubectl --namespace dapr-pubsub-kafka get pods -l app=sub-app --no-headers -o custom-columns=":metadata.name"` sub-app -f 
+
+
 
 ### LINKS
 
