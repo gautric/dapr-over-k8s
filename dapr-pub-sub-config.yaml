@@ -2,7 +2,7 @@
 - name: Dapr PubSub Installation
   hosts: localhost
   vars:
-     app_namespace: dapr-pubsub-kafka
+     app_namespace: dapr-pubsub-config
      apps: 
       - sub-app
       - pub-app
