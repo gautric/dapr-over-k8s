@@ -135,6 +135,30 @@ and
 
   kubectl --namespace dapr-service-invocation  logs `kubectl --namespace dapr-service-invocation get pods -l app=order-processor --no-headers -o custom-columns=":metadata.name"` order-processor -f 
 
+
+### Install Dapr Pub Sub with Helm
+
+What's the playbook does :
+
+. Create `dapr-pub-sub` NS
+. Deploy Pub Sub with Helm chart
+.. Checkout App (build, deploy, imagestream)
+.. Order-Process App (build, deploy, imagestream)
+.. Dapr Configuration for ServiceInvocation
+
+#### Execute the playbook
+
+  ansible-playbook dapr-pub-sub.yaml
+
+#### Check client / server application with log
+
+  kubectl --namespace dapr-pub-sub  logs `kubectl --namespace dapr-pub-sub get pods -l app=checkout --no-headers -o custom-columns=":metadata.name"` checkout -f
+
+and 
+
+  kubectl --namespace dapr-pub-sub  logs `kubectl --namespace dapr-pub-sub get pods -l app=order-processor --no-headers -o custom-columns=":metadata.name"` order-processor -f 
+
+
 ### TODO
 
 * Create Role
