@@ -1,0 +1,27 @@
+---
+- name: Dapr PubSub Installation
+  hosts: localhost
+  vars:
+     app_namespace: dapr-pubsub-kafka
+     apps: 
+      - sub-app
+      - pub-app
+     strimzi_version: 0.30.0
+  tasks:
+
+    - name: Retrieve Route
+      kubernetes.core.k8s_info:
+        api_version: route.openshift.io/v1
+        kind: Route
+        namespace: "{{ app_namespace }}"
+        name: pub-app
+      register: route
+
+    - name: Test Route
+      ansible.builtin.uri:
+        url: "http://{{ route.resources[0].spec.host }}/publish"
+        method: POST
+        src: "./samples/pub-sub-config/messages/{{ item }}.json"
+        status_code: 200
+        body_format: json
+      with_items: "{{ msg_test }}"

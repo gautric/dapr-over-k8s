@@ -1,0 +1,10 @@
+
+pubsub:
+  kafka_cluster_name: pubsub-dapr
+  dapr_config: pubsub-dapr-kafka
+  topic: pubsub-dapr-topic
+  component_name: pubsub-component
+
+kafka:
+  master:
+    host: pubsub-dapr-kafka-brokers.svc:9092
