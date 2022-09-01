@@ -31,9 +31,6 @@
         name: default-route
       register: route
 
-    - debug: msg="Openshift {{ route }}"
-      when: route.api_found
-
     - debug: msg="Openshift {{ route.resources[0].spec.host }}"
       when: route.api_found
 
