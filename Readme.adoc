@@ -78,7 +78,7 @@ To run this playbook you need :
 
 * For Dapr Dashboard (Mac users)
  
-  open -a Firefox   http://`kubectl --namespace dapr-system get Route -l app=dapr-dashboard --no-headers -o custom-columns=":spec.host" `
+  open -a Firefox   http://`kubectl --namespace dapr-system get Route -l name=dapr-dashboard --no-headers -o custom-columns=":spec.host" `
 
 You should get this kind of output into your browser
 
@@ -86,7 +86,7 @@ image::img/dapr-dashboard.png[]
 
 * For Zipkin Dashboard (Mac users)
  
-  open -a Firefox   http://`kubectl --namespace dapr-system get Route -l app=zipkin --no-headers -o custom-columns=":spec.host" `
+  open -a Firefox   http://`kubectl --namespace dapr-system get Route -l name=dapr-zipkin --no-headers -o custom-columns=":spec.host" `
 
 You should get this kind of output into your browser
 
