@@ -52,10 +52,9 @@ To use this project you need at least :
 * Cluster admin
 * Ansible 2.13+
 * Helm 3.9+
-
 ### Install Dapr System with Helm
 
-What's the playbook does :
+What the playbook does :
 
 . Create `dapr-system` NS
 . Install Helm Chart Repo (DAPR and REDIS)
@@ -94,7 +93,7 @@ image::img/dapr-zipkin.png[]
 
 ### Install Dapr Sample with Helm
 
-What's the playbook does :
+What the playbook does :
 
 . Create `dapr-sample` NS
 . Copy/Paste redis password for Dapr Componentfootnote:[to check]
@@ -115,7 +114,7 @@ and
 
 ### Install Dapr Service Invocation with Helm
 
-What's the playbook does :
+What the playbook does :
 
 . Create `dapr-service-invocation` NS
 . Deploy Service Invocation with Helm chart
@@ -138,7 +137,7 @@ and
 
 ### Install Dapr Pub Sub with Helm
 
-What's the playbook does :
+What the playbook does :
 
 . Create `dapr-pub-sub` NS
 . Deploy Pub Sub with Helm chart
@@ -160,7 +159,7 @@ and
 
 ### Install Dapr Pub Sub and Redis with Helm
 
-What's the playbook does :
+What the playbook does :
 
 . Create `dapr-pubsub-config` NS
 . Deploy Pub Sub with Helm chart
@@ -183,7 +182,7 @@ and
 
 ### Install Dapr Pub Sub and Kafka with Helm
 
-What's the playbook does :
+What the playbook does :
 
 . Create `dapr-pubsub-kafka` and `dapr-kafka` NS
 . Deploy Pub Sub with Helm chart
