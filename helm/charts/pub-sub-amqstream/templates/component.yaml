@@ -1,0 +1,22 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: {{ .Release.Namespace }}-{{ .Values.pubsub.component_name }}
+spec:
+  type: pubsub.kafka
+  version: v1
+  metadata:
+  - name: topics
+    value: "{{ .Values.pubsub.topic }}2"
+  - name: brokers
+    value: "{{ .Values.pubsub.kafka_cluster_name }}-kafka-brokers:9092"
+  - name: authType
+    value: "none"
+  - name: clientID
+    value: {{ .Release.Namespace }}
+  # - name: saslUsername # Required if authRequired is `true`.
+  #   value: "user"
+  # - name: saslPassword # Required if authRequired is `true`.
+  #   secretKeyRef:
+  #     name: kafka-secrets
+  #     key: saslPasswordSecret

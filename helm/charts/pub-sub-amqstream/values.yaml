@@ -1,0 +1,10 @@
+
+pubsub:
+  kafka_cluster_name: pubsub-dapr
+  dapr_config: pubsub-dapr-amqstream
+  topic: pubsub-dapr-topic
+  component_name: pubsub-component
+
+kafka:
+  master:
+    host: pubsub-dapr-amqstream-brokers.svc:9092

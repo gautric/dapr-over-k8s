@@ -1,0 +1,55 @@
+---
+- name: Dapr PubSub Installation
+  hosts: localhost
+  vars:
+     app_namespace: kafka-metrics-mgr
+     apps: 
+      - sub-app
+      - pub-app
+     strimzi_version: 0.30.0
+  tasks:
+
+    - name: "Create {{ app_namespace }} namespace"
+      kubernetes.core.k8s:
+        name: "{{ app_namespace }}"
+        api_version: v1
+        kind: Namespace
+        state: present
+      with_items:
+        - "{{ app_namespace }}"
+        - dapr-kafka
+
+    - name: Check if K8S is an Openshift instance
+      kubernetes.core.k8s_info:
+        api_version: route.openshift.io/v1
+        kind: Route
+        namespace: openshift-image-registry
+        name: default-route
+      register: route
+
+    - debug: msg="Openshift {{ route.resources[0].spec.host }}"
+      when: route.api_found
+
+    # - name: Install Kafka Helm Chart
+    #   kubernetes.core.helm:
+    #     name: kafka
+    #     namespace: dapr-kafka
+    #     chart_ref: strimzi/strimzi-kafka-operator
+    #     chart_version: "{{ strimzi_version }}"
+    #     create_namespace: true
+    #     update_repo_cache: true
+    #     state: present
+    #     values:
+    #       watchAnyNamespace: true
+    #       logLevel: DEBUG
+    #       fullReconciliationIntervalMs: 240000
+
+    - name: Install Pub-Sub-Kafka Helm Chart
+      kubernetes.core.helm:
+        name: pub-sub
+        namespace: "{{ app_namespace }}"
+        chart_ref: ./helm/charts/pub-sub-amqstream
+        release_state: present
+      register: helm_ret
+
+    - debug: msg="Helm {{ helm_ret.stdout }}"
