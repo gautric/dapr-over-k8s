@@ -1,0 +1,1 @@
+https://austindewey.com/2020/07/10/how-to-check-that-a-kubernetes-api-resource-exists-when-using-helm/

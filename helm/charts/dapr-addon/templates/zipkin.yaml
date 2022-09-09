@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zipkin
+  labels:
+    app: zipkin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zipkin
+  template:
+    metadata:
+      labels:
+        app: zipkin
+    spec:
+      containers:
+        - name: zipkin
+          image: openzipkin/zipkin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+  labels:
+    app: zipkin            
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - protocol: TCP
+      port: 9411
+      targetPort: 9411
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  selector:
+    app: zipkin
+---
+{{- if .Capabilities.APIVersions.Has "route.openshift.io/v1/Route" }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: dapr-zipkin
+  annotations:
+    openshift.io/host.generated: 'true'
+  labels:
+    name: dapr-zipkin
+spec:
+  to:
+    kind: Service
+    name: zipkin
+    weight: 100
+  port:
+    targetPort: 9411
+  wildcardPolicy: None             
+{{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress" }}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: dapr-zipkin
+  labels:
+    name: dapr-zipkin
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              serviceName: dapr-zipkin
+              servicePort: 8080
+{{- end }}
