@@ -8,3 +8,12 @@ pubsub:
 kafka:
   master:
     host: pubsub-dapr-amqstream-brokers.svc:9092
+
+grafana:
+  secret_token: N_A
+
+rbac:
+  create: true
+
+operator:
+  install: false

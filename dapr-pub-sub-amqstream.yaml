@@ -6,7 +6,7 @@
      apps: 
       - sub-app
       - pub-app
-     strimzi_version: 0.30.0
+     service_account_name: grafana-serviceaccount
   tasks:
 
     - name: "Create {{ app_namespace }} namespace"
@@ -17,7 +17,6 @@
         state: present
       with_items:
         - "{{ app_namespace }}"
-        - dapr-kafka
 
     - name: Check if K8S is an Openshift instance
       kubernetes.core.k8s_info:
@@ -30,26 +29,87 @@
     - debug: msg="Openshift {{ route.resources[0].spec.host }}"
       when: route.api_found
 
-    # - name: Install Kafka Helm Chart
-    #   kubernetes.core.helm:
-    #     name: kafka
-    #     namespace: dapr-kafka
-    #     chart_ref: strimzi/strimzi-kafka-operator
-    #     chart_version: "{{ strimzi_version }}"
-    #     create_namespace: true
-    #     update_repo_cache: true
-    #     state: present
-    #     values:
-    #       watchAnyNamespace: true
-    #       logLevel: DEBUG
-    #       fullReconciliationIntervalMs: 240000
+    - name: Check if AMQ Stream Operator
+      kubernetes.core.k8s_info:
+        api_version: packages.operators.coreos.com/v1
+        kind: PackageManifest
+        namespace: openshift-marketplace
+        name: amq-streams
+      register: amq_streams_operator_check
 
-    - name: Install Pub-Sub-Kafka Helm Chart
+    - debug: msg="{{ amq_streams_operator_check }}"
+      when: amq_streams_operator_check.api_found  
+
+    # - name: Install Pub-Sub-Kafka Helm Chart
+    #   kubernetes.core.helm:
+    #     name: pub-sub
+    #     namespace: "{{ app_namespace }}"
+    #     chart_ref: ./helm/charts/pub-sub-amqstream
+    #     release_state: present
+    #   register: helm_ret
+
+    # - debug: msg="Helm {{ helm_ret.stdout }}"
+
+
+    # - name: Deploy Python app with the Dapr sidecar
+    #   kubernetes.core.k8s:
+    #     state: present
+    #     namespace: "{{ app_namespace }}"
+    #     src: quickstarts/tutorials/hello-kubernetes/deploy/python.yaml
+
+    - name: "Deploy Grafana ServiceAccount"
+      kubernetes.core.k8s:
+        api_version: v1
+        state: present
+        kind: ServiceAccount
+        namespace: "{{ app_namespace }}"
+        definition:
+          metadata:
+            name: "{{ service_account_name }}"
+            labels:
+              app: grafana
+            annotations:
+              app: grafana
+
+    - name: Check ServiceAccount
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: ServiceAccount
+        namespace: "{{ app_namespace }}"
+        name: "{{ service_account_name }}"
+      register: service_account
+
+    - name: Set Secret Token Name
+      set_fact:
+        secret_token_name: "{{ service_account.resources[0].secrets | map(attribute='name') | select('search', '-token-') | first }}" 
+
+    - name: Check Secret
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Secret
+        namespace: "{{ app_namespace }}"
+        name: "{{ secret_token_name }}"
+      register: secret
+
+    - name: Set Token
+      set_fact:
+        secret_token: "{{ secret.resources[0].data.token | b64decode  }}" 
+
+    - name: Install Pub-Sub-AMQStream Helm Chart
       kubernetes.core.helm:
-        name: pub-sub
+        name: dapr-amqstream
         namespace: "{{ app_namespace }}"
         chart_ref: ./helm/charts/pub-sub-amqstream
         release_state: present
+        values:
+          grafana:
+            secret_token: "{{ secret_token }}"
+          rbac:
+            create: true
+          operator:
+            install: false
+
       register: helm_ret
 
-    - debug: msg="Helm {{ helm_ret.stdout }}"
+
+
