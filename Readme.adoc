@@ -282,6 +282,8 @@ image::img/dapr-kafka-ui.png[Kafka UI Dashboard]
  
   open -a Firefox https://`kubectl --namespace kafka-metrics get Route grafana  --no-headers -o custom-columns=":spec.host"`
 
+As usual, here is the default credential for Grafana UI : `admin` / `admin`
+
 You should get this kind of output :
 
 .General Dashboard
