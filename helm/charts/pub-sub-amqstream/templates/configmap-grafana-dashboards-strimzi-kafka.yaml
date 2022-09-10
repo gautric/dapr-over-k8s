@@ -1,0 +1,8 @@
+﻿kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: grafana-dashboards-strimzi-kafka
+data:
+  grafana-dashboards-strimzi-kafka.json: |-
+    {{- $.Files.Get "configurations/strimzi-kafka.json"  | nindent 4 -}}
+  
