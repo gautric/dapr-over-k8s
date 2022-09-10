@@ -37,26 +37,6 @@
         name: amq-streams
       register: amq_streams_operator_check
 
-    - debug: msg="{{ amq_streams_operator_check }}"
-      when: amq_streams_operator_check.api_found  
-
-    # - name: Install Pub-Sub-Kafka Helm Chart
-    #   kubernetes.core.helm:
-    #     name: pub-sub
-    #     namespace: "{{ app_namespace }}"
-    #     chart_ref: ./helm/charts/pub-sub-amqstream
-    #     release_state: present
-    #   register: helm_ret
-
-    # - debug: msg="Helm {{ helm_ret.stdout }}"
-
-
-    # - name: Deploy Python app with the Dapr sidecar
-    #   kubernetes.core.k8s:
-    #     state: present
-    #     namespace: "{{ app_namespace }}"
-    #     src: quickstarts/tutorials/hello-kubernetes/deploy/python.yaml
-
     - name: "Deploy Grafana ServiceAccount"
       kubernetes.core.k8s:
         api_version: v1
