@@ -2,7 +2,7 @@
 - name: Dapr PubSub Installation
   hosts: localhost
   vars:
-     app_namespace: kafka-metrics-mgr
+     app_namespace: kafka-metrics
      apps: 
       - sub-app
       - pub-app

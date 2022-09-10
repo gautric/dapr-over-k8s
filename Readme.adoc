@@ -190,7 +190,7 @@ What the playbook does :
 .. Sub-App
 .. Kafka cluster and Topic creation
 .. Dapr Configuration for PubSub over Kafka
-++ Kafka UI
+.. Kafka UI
 
 #### Execute the playbook
 
@@ -225,7 +225,65 @@ and
 
 You should get this kind of output :
 
+image::img/dapr-kafka-ui.png[]
+
+### Install Dapr Pub Sub and AMQStream / Prometheus / Grafana with Helm
+
+What the playbook does :
+
+. Create `kafka-metrics` NS
+. Deploy Pub Sub with Helm chart
+.. Pub-App 
+.. Sub-App
+.. Kafka cluster and Topic creation
+.. Dapr Configuration for PubSub over Kafka
+.. Kafka UI
+
+#### Execute the playbook
+
+  ansible-playbook dapr-pub-sub-amqstream.yaml
+
+
+#### Post some events
+
+  curl -X POST http://`kubectl --namespace kafka-metrics get Route pub-app  --no-headers -o custom-columns=":spec.host"`/publish -H Content-Type:application/json --data @samples/pub-sub-config/messages/gadget.json
+
+or
+
+  curl -X POST http://`kubectl --namespace kafka-metrics get Route pub-app  --no-headers -o custom-columns=":spec.host"`/publish -H Content-Type:application/json --data @samples/pub-sub-config/messages/widget.json
+
+or
+
+  curl -X POST http://`kubectl --namespace kafka-metrics get Route pub-app  --no-headers -o custom-columns=":spec.host"`/publish -H Content-Type:application/json --data @samples/pub-sub-config/messages/thingamajig.json
+
+#### Check client / server application with log
+
+  kubectl --namespace kafka-metrics  logs `kubectl --namespace kafka-metrics get pods -l app=pub-app --no-headers -o custom-columns=":metadata.name"` pub-app -f
+
+and 
+
+  kubectl --namespace kafka-metrics  logs `kubectl --namespace kafka-metrics get pods -l app=sub-app --no-headers -o custom-columns=":metadata.name"` sub-app -f 
+
+#### Retrieve message inside Kafka UI console
+
+* For Kafka-UI Dashboard (Mac users)
+ 
+  open -a Firefox "http://`kubectl --namespace kafka-metrics get Route kafka-ui  --no-headers -o custom-columns=":spec.host"`/ui/clusters/pubsub-dapr/topics/pubsub-dapr-topic/messages?filterQueryType=STRING_CONTAINS&attempt=0&limit=100&seekDirection=FORWARD&seekType=OFFSET&seekTo=0::0"
+
+You should get this kind of output :
+
 image::img/dapr-kafka-ui.png[]   
+
+#### Retrieve message inside Grafana console
+
+* For Grafana Dashboard (Mac users)
+ 
+  open -a Firefox https://`kubectl --namespace kafka-metrics get Route grafana  --no-headers -o custom-columns=":spec.host"`
+
+You should get this kind of output :
+
+image::img/kafka-dashboard.png[]   
+image::img/kafka-dashboard-2.png[]   
 
 
 ### LINKS
