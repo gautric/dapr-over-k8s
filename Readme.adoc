@@ -225,7 +225,8 @@ and
 
 You should get this kind of output :
 
-image::img/dapr-kafka-ui.png[]
+.Kafka UI Dashboard
+image::img/dapr-kafka-ui.png[Kafka UI Dashboard]
 
 ### Install Dapr Pub Sub and AMQStream / Prometheus / Grafana with Helm
 
@@ -272,7 +273,8 @@ and
 
 You should get this kind of output :
 
-image::img/dapr-kafka-ui.png[]   
+.Kafka UI Dashboard
+image::img/dapr-kafka-ui.png[Kafka UI Dashboard]
 
 #### Retrieve message inside Grafana console
 
@@ -282,8 +284,11 @@ image::img/dapr-kafka-ui.png[]
 
 You should get this kind of output :
 
-image::img/kafka-dashboard.png[]   
-image::img/kafka-dashboard-2.png[]   
+.General Dashboard
+image::img/kafka-dashboard.png[General Dashboard]
+
+.Messages I/O
+image::img/kafka-dashboard-2.png[Messages I/O]
 
 
 ### LINKS
