@@ -75,7 +75,7 @@
       set_fact:
         secret_token: "{{ secret.resources[0].data.token | b64decode  }}" 
 
-    - name: Install Pub-Sub-AMQStream Helm Chart
+    - name: Install DAPR Pub-Sub-AMQStream Helm Chart
       kubernetes.core.helm:
         name: dapr-amqstream
         namespace: "{{ app_namespace }}"
