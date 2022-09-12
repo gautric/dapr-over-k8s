@@ -52,6 +52,8 @@ To use this project you need at least :
 * Cluster admin
 * Ansible 2.13+
 * Helm 3.9+
+* Cluster Admin-Role
+
 ### Install Dapr System with Helm
 
 What the playbook does :
