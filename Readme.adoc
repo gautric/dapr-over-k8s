@@ -238,6 +238,7 @@ What the playbook does :
 .. Sub-App
 .. Kafka cluster and Topic creation
 .. Dapr Configuration for PubSub over Kafka
+.. Prometheus and Grafana integration
 .. Kafka UI
 
 #### Execute the playbook
