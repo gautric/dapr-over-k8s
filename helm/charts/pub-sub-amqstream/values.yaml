@@ -14,6 +14,7 @@ grafana:
 
 rbac:
   create: true
+  userid: opentlc-mgr
 
 operator:
   install: false
