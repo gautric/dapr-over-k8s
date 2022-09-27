@@ -61,9 +61,10 @@ What the playbook does :
 . Create `dapr-system` NS
 . Install Helm Chart Repo (DAPR and REDIS)
 . Install DAPR Helm 
-. Create a route to Dapr Dashboard
+. Install DAPR-Addon Helm 
+.. Route to DAPR Dashboard
+.. Zipkin Configuration
 . Install Redis Helm 
-. Install Zipkin Configuration
 
 To run this playbook you need :
 
