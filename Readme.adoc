@@ -48,11 +48,10 @@ By using playbook, a YAML file including all commands designer by Ansible, Ops u
 
 To use this project you need at least :
 
-* Openshift 4.10/Kubernetes
-* Cluster admin
+* Openshift 4.10 / Kubernetes 1.23
 * Ansible 2.13+
 * Helm 3.9+
-* Cluster Admin-Role
+* Cluster Admin-Role user
 
 ### Install Dapr System with Helm
 
@@ -243,6 +242,8 @@ What the playbook does :
 .. Dapr Configuration for PubSub over Kafka
 .. Prometheus and Grafana integration
 .. Kafka UI
+
+NOTE: Don't forget to change some values inside `values.yaml`
 
 #### Execute the playbook
 
