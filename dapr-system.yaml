@@ -3,7 +3,7 @@
   hosts: localhost
   vars:
      helm_chart_url: 
-      - { name: "dapr", url: "https://dapr.github.io/helm-charts" }
+      - { name: "dapr", url: "https://dapr.github.io/helm-charts/" }
       - { name: "bitnami", url: "https://charts.bitnami.com/bitnami" }
       - { name: "strimzi", url: "https://strimzi.io/charts/" }
      dapr_version: 1.8.4
